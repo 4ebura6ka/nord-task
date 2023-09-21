@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using partycli.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,19 +201,7 @@ namespace partycli
             }
     }
 
-    class LogModel
-    {
-        public string Action { get; set; }
-        public DateTime Time { get; set; }
-    }
 
-    class ServerModel
-    {
-        public string Name { get; set; }
-        public int Load { get; set; }
-        public string Status { get; set; }
-
-    }
 
     enum States
     {
