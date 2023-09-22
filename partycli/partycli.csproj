@@ -76,7 +76,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="States.cs" />
+    <Compile Include="State.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

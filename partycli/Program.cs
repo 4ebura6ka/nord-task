@@ -12,83 +12,90 @@ namespace partycli
     {
         static void Main(string[] args)
         {
-            var currentState = States.none;
-            string name = null;
-            int argIndex = 1;
+            var currentState = State.None;
+            var name = string.Empty;
+            var argIndex = 1;
 
-            ServerService serverService = new ServerService();
+            var serverService = new ServerService();
 
-            foreach (string arg in args)
+            foreach (var arg in args)
             {
-                if (currentState == States.none)
+                switch (currentState)
                 {
-                    if (arg == "server_list")
-                    {
-                        currentState = States.server_list;
-                        if (argIndex >= args.Count())
+                    case State.None:
                         {
-                            var serverList = serverService.getAllServersListAsync();
-                            storeValue("serverlist", serverList, false);
-                            log("Saved new server list: " + serverList);
-                            displayList(serverList);
-                        }
-                    }
-                    if (arg == "config")
-                    {
-                        currentState = States.config;
-                    }
-                }
-                else if (currentState == States.config)
-                {
-                    if (name == null)
-                    {
-                        name = arg;
-                    }
-                    else
-                    {
-                        storeValue(proccessName(name), arg);
-                        log("Changed " + proccessName(name) + " to " + arg);
-                        name = null;
-                    }
-                }
-                else if (currentState == States.server_list)
-                {
-                    if (arg == "--local")
-                    {
-                        if (!String.IsNullOrEmpty(Properties.Settings.Default.serverlist)) { 
-                        displayList(Properties.Settings.Default.serverlist);
-                        } else
+                            if (arg == "server_list")
+                            {
+                                currentState = State.ServerList;
+                                if (argIndex >= args.Count())
+                                {
+                                    var serverList = serverService.getAllServersListAsync();
+                                    StoreValue("serverlist", serverList, false);
+                                    Log("Saved new server list: " + serverList);
+                                    DisplayList(serverList);
+                                }
+                            }
+                            if (arg == "config")
+                            {
+                                currentState = State.Config;
+                            }
+                        }; break;
+
+                    case State.Config:
                         {
-                            Console.WriteLine("Error: There are no server data in local storage");
-                        }
-                    }
-                    else if (arg == "--france")
-                    {
-                        //france == 74
-                        //albania == 2
-                        //Argentina == 10
-                        var query = new VpnServerQuery(null,74,null,null,null, null);
-                        var serverList = serverService.getAllServerByCountryListAsync(query.CountryId.Value); //France id == 74
-                        storeValue("serverlist", serverList, false);
-                        log("Saved new server list: " + serverList);
-                        displayList(serverList);
-                    }
-                    else if (arg == "--TCP")
-                    {
-                        //UDP = 3
-                        //Tcp = 5
-                        //Nordlynx = 35
-                        var query = new VpnServerQuery(5,null,null,null,null, null);
-                        var serverList = serverService.getAllServerByProtocolListAsync((int)query.Protocol.Value);
-                        storeValue("serverlist", serverList, false);
-                        log("Saved new server list: " + serverList);
-                        displayList(serverList);
-                    }
+                            if (name == null)
+                            {
+                                name = arg;
+                            }
+                            else
+                            {
+                                StoreValue(ProccessName(name), arg);
+                                Log("Changed " + ProccessName(name) + " to " + arg);
+                                name = null;
+                            }
+                        }; break;
+                    case State.ServerList:
+                        {
+                            if (arg == "--local")
+                            {
+                                if (!String.IsNullOrEmpty(Properties.Settings.Default.serverlist))
+                                {
+                                    DisplayList(Properties.Settings.Default.serverlist);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error: There are no server data in local storage");
+                                }
+                            }
+                            else if (arg == "--france")
+                            {
+                                //france == 74
+                                //albania == 2
+                                //Argentina == 10
+                                var query = new VpnServerQuery(null, 74, null, null, null, null);
+                                var serverList = serverService.getAllServerByCountryListAsync(query.CountryId.Value); //France id == 74
+                                StoreValue("serverlist", serverList, false);
+                                Log("Saved new server list: " + serverList);
+                                DisplayList(serverList);
+                            }
+                            else if (arg == "--TCP")
+                            {
+                                //UDP = 3
+                                //Tcp = 5
+                                //Nordlynx = 35
+                                var query = new VpnServerQuery(5, null, null, null, null, null);
+                                var serverList = serverService.getAllServerByProtocolListAsync((int)query.Protocol.Value);
+                                StoreValue("serverlist", serverList, false);
+                                Log("Saved new server list: " + serverList);
+                                DisplayList(serverList);
+                            }
+                        }; break;
+
                 }
-                argIndex = argIndex + 1;
+                argIndex++;
             }
 
-            if(currentState == States.none)
+            if (currentState == State.None)
             {
                 Console.WriteLine("To get and save all servers, use command: partycli.exe server_list");
                 Console.WriteLine("To get and save France servers, use command: partycli.exe server_list --france");
@@ -98,30 +105,33 @@ namespace partycli
             Console.Read();
         }
 
-        static void storeValue(string name, string value, bool writeToConsole = true)
+        static void StoreValue(string name, string value, bool writeToConsole = true)
         {
-            try { 
+            try
+            {
                 var settings = Properties.Settings.Default;
                 settings[name] = value;
                 settings.Save();
-                if (writeToConsole) { 
-                Console.WriteLine("Changed " + name + " to " + value);
+                if (writeToConsole)
+                {
+                    Console.WriteLine("Changed " + name + " to " + value);
                 }
             }
-            catch {
-                Console.WriteLine("Error: Couldn't save " + name + ". Check if command was input correctly." );
+            catch
+            {
+                Console.WriteLine("Error: Couldn't save " + name + ". Check if command was input correctly.");
             }
 
         }
 
-        static string proccessName(string name)
+        static string ProccessName(string name)
         {
             name = name.Replace("-", string.Empty);
             return name;
         }
 
- 
-        static void displayList(string serverListString)
+
+        static void DisplayList(string serverListString)
         {
             var serverlist = JsonConvert.DeserializeObject<List<ServerModel>>(serverListString);
             Console.WriteLine("Server list: ");
@@ -132,7 +142,7 @@ namespace partycli
             Console.WriteLine("Total servers: " + serverlist.Count);
         }
 
-        static void log(string action)
+        static void Log(string action)
         {
             var newLog = new LogModel
             {
@@ -150,33 +160,10 @@ namespace partycli
                 currentLog = new List<LogModel> { newLog };
             }
 
-            storeValue("log", JsonConvert.SerializeObject(currentLog), false);
+            StoreValue("log", JsonConvert.SerializeObject(currentLog), false);
         }
     }
 
-    internal class VpnServerQuery
-    {
-             public int? Protocol { get; set; }
 
-            public int? CountryId { get; set;}
-
-            public int? CityId { get; set;}
-
-            public int? RegionId { get; set;}
-
-            public int? SpecificServcerId { get; set;}
-
-            public int? ServerGroupId { get; set;}
-
-            public VpnServerQuery(int? protocol, int? countryId, int? cityId, int? regionId, int? specificServcerId, int? serverGroupId)
-            {
-                Protocol = protocol;
-                CountryId = countryId;
-                CityId = cityId;
-                RegionId = regionId;
-                SpecificServcerId = specificServcerId;
-                ServerGroupId = serverGroupId;
-            }
-    }
 
 }
