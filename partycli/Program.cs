@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using partycli.API;
 using partycli.Models;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,13 @@ namespace partycli
 {
     class Program
     {
-        private static readonly HttpClient client = new HttpClient();
-
         static void Main(string[] args)
         {
             var currentState = States.none;
             string name = null;
             int argIndex = 1;
+
+            ServerService serverService = new ServerService();
 
             foreach (string arg in args)
             {
@@ -26,7 +27,7 @@ namespace partycli
                         currentState = States.server_list;
                         if (argIndex >= args.Count())
                         {
-                            var serverList = getAllServersListAsync();
+                            var serverList = serverService.getAllServersListAsync();
                             storeValue("serverlist", serverList, false);
                             log("Saved new server list: " + serverList);
                             displayList(serverList);
@@ -67,7 +68,7 @@ namespace partycli
                         //albania == 2
                         //Argentina == 10
                         var query = new VpnServerQuery(null,74,null,null,null, null);
-                        var serverList = getAllServerByCountryListAsync(query.CountryId.Value); //France id == 74
+                        var serverList = serverService.getAllServerByCountryListAsync(query.CountryId.Value); //France id == 74
                         storeValue("serverlist", serverList, false);
                         log("Saved new server list: " + serverList);
                         displayList(serverList);
@@ -78,7 +79,7 @@ namespace partycli
                         //Tcp = 5
                         //Nordlynx = 35
                         var query = new VpnServerQuery(5,null,null,null,null, null);
-                        var serverList = getAllServerByProtocolListAsync((int)query.Protocol.Value);
+                        var serverList = serverService.getAllServerByProtocolListAsync((int)query.Protocol.Value);
                         storeValue("serverlist", serverList, false);
                         log("Saved new server list: " + serverList);
                         displayList(serverList);
@@ -119,30 +120,7 @@ namespace partycli
             return name;
         }
 
-        static string getAllServersListAsync()
-        {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers");
-                var response = client.SendAsync(request).Result;
-                var responseString = response.Content.ReadAsStringAsync().Result;
-                return responseString;
-        }
-
-        static string getAllServerByCountryListAsync(int countryId)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers?filters[servers_technologies][id]=35&filters[country_id]=" + countryId);
-            var response = client.SendAsync(request).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            return responseString;
-        }
-
-        static string getAllServerByProtocolListAsync(int vpnProtocol)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers?filters[servers_technologies][id]=" + vpnProtocol);
-            var response = client.SendAsync(request).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            return responseString;
-        }
-
+ 
         static void displayList(string serverListString)
         {
             var serverlist = JsonConvert.DeserializeObject<List<ServerModel>>(serverListString);
@@ -201,12 +179,4 @@ namespace partycli
             }
     }
 
-
-
-    enum States
-    {
-        none = 0,
-        server_list = 1,
-        config = 2,
-    };
 }
