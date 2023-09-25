@@ -5,18 +5,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using SimpleInjector;
 
 namespace partycli
 {
-    class Program
+    static class Program
     {
+        static readonly Container container;
+
+        static Program()
+        {
+            container = new Container();
+            container.Register<ServerService>();
+            container.Verify();
+        }
+
         static void Main(string[] args)
         {
             var currentState = State.None;
             var name = string.Empty;
             var argIndex = 1;
 
-            var serverService = new ServerService();
+            var serverService = container.GetInstance<ServerService>();
 
             foreach (var arg in args)
             {

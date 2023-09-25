@@ -67,6 +67,9 @@
     <Reference Include="Spectre.Console">
       <HintPath>..\packages\Spectre.Console.0.47.0\lib\netstandard2.0\Spectre.Console.dll</HintPath>
     </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\packages\SimpleInjector.5.4.1\lib\net461\SimpleInjector.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
