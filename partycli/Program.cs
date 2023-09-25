@@ -16,7 +16,10 @@ namespace partycli
         static Program()
         {
             container = new Container();
-            container.Register<ServerService>();
+            container.Register<ServerService>(Lifestyle.Scoped);
+            container.Register<ILogger, Logger>(Lifestyle.Scoped);
+            container.Register<IStorage, Storage>(Lifestyle.Singleton);
+
             container.Verify();
         }
 
@@ -26,7 +29,9 @@ namespace partycli
             var name = string.Empty;
             var argIndex = 1;
 
+            var logger = container.GetInstance<Logger>();
             var serverService = container.GetInstance<ServerService>();
+            var storage = container.GetInstance<Storage>();
 
             foreach (var arg in args)
             {
@@ -40,8 +45,8 @@ namespace partycli
                                 if (argIndex >= args.Count())
                                 {
                                     var serverList = serverService.getAllServersListAsync();
-                                    StoreValue("serverlist", serverList, false);
-                                    Log("Saved new server list: " + serverList);
+                                    storage.StoreValue("serverlist", serverList, false);
+                                    logger.Log("Saved new server list: " + serverList);
                                     DisplayList(serverList);
                                 }
                             }
@@ -59,8 +64,8 @@ namespace partycli
                             }
                             else
                             {
-                                StoreValue(ProccessName(name), arg);
-                                Log("Changed " + ProccessName(name) + " to " + arg);
+                                storage.StoreValue(ProccessName(name), arg);
+                                logger.Log("Changed " + ProccessName(name) + " to " + arg);
                                 name = null;
                             }
                         }; break;
@@ -84,8 +89,8 @@ namespace partycli
                                 //Argentina == 10
                                 var query = new VpnServerQuery(null, 74, null, null, null, null);
                                 var serverList = serverService.getAllServerByCountryListAsync(query.CountryId.Value); //France id == 74
-                                StoreValue("serverlist", serverList, false);
-                                Log("Saved new server list: " + serverList);
+                                storage.StoreValue("serverlist", serverList, false);
+                                logger.Log("Saved new server list: " + serverList);
                                 DisplayList(serverList);
                             }
                             else if (arg == "--TCP")
@@ -95,8 +100,8 @@ namespace partycli
                                 //Nordlynx = 35
                                 var query = new VpnServerQuery(5, null, null, null, null, null);
                                 var serverList = serverService.getAllServerByProtocolListAsync((int)query.Protocol.Value);
-                                StoreValue("serverlist", serverList, false);
-                                Log("Saved new server list: " + serverList);
+                                storage.StoreValue("serverlist", serverList, false);
+                                logger.Log("Saved new server list: " + serverList);
                                 DisplayList(serverList);
                             }
                         }; break;
@@ -115,24 +120,7 @@ namespace partycli
             Console.Read();
         }
 
-        static void StoreValue(string name, string value, bool writeToConsole = true)
-        {
-            try
-            {
-                var settings = Properties.Settings.Default;
-                settings[name] = value;
-                settings.Save();
-                if (writeToConsole)
-                {
-                    Console.WriteLine("Changed " + name + " to " + value);
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Error: Couldn't save " + name + ". Check if command was input correctly.");
-            }
 
-        }
 
         static string ProccessName(string name)
         {
@@ -152,26 +140,7 @@ namespace partycli
             Console.WriteLine("Total servers: " + serverlist.Count);
         }
 
-        static void Log(string action)
-        {
-            var newLog = new LogModel
-            {
-                Action = action,
-                Time = DateTime.Now
-            };
-            List<LogModel> currentLog;
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.log))
-            {
-                currentLog = JsonConvert.DeserializeObject<List<LogModel>>(Properties.Settings.Default.log);
-                currentLog.Add(newLog);
-            }
-            else
-            {
-                currentLog = new List<LogModel> { newLog };
-            }
 
-            StoreValue("log", JsonConvert.SerializeObject(currentLog), false);
-        }
     }
 
 

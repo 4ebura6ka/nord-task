@@ -80,6 +80,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="State.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Storage.cs" />
+    <Compile Include="IStorage.cs" />
+    <Compile Include="ILogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
