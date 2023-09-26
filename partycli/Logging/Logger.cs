@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using PartyCli.Data;
+﻿using PartyCli.Data;
 using PartyCli.Models;
 using System;
 using System.Collections.Generic;
@@ -23,27 +22,17 @@ namespace PartyCli
                 Time = DateTime.Now
             };
 
-            List<LogModel> currentLog;
             var storedLog = _storage.RetrieveValue("log");
-            if (!string.IsNullOrEmpty(storedLog))
+            if (storedLog != null)
             {
-                try
-                {
-                    currentLog = JsonConvert.DeserializeObject<List<LogModel>>(storedLog);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Something weird stored in logs:{ex.Message}.Re-writing.");
-                    currentLog = new List<LogModel>();
-                }
-                currentLog.Add(newLog);
+                storedLog.Add(newLog);
             }
             else
             {
-                currentLog = new List<LogModel> { newLog };
+                storedLog = new List<LogModel> { newLog };
             }
 
-            _storage.StoreValue("log", JsonConvert.SerializeObject(currentLog), false);
+            _storage.StoreValue("log", storedLog, false);
         }
     }
 }

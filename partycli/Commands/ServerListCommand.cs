@@ -38,15 +38,18 @@ namespace PartyCli.Commands
         {
             if (settings.Local != null && (bool)settings.Local)
             {
-                var serverlist = _storage.RetrieveValue("serverlist");
-                if (!string.IsNullOrEmpty(serverlist))
+                var servers = _storage.RetrieveValue("serverlist");
+                if (servers != null)
                 {
-                    var servers = JsonConvert.DeserializeObject<List<ServerModel>>(serverlist);
                     DisplayList(servers);
                 }
                 else
                 {
+#if DEBUG
                     Console.WriteLine("Error: There are no server data in local storage");
+#else
+                    _logger.Log("Error: There are no server data in local storage");
+#endif
                 }
                 return 0;
             }
@@ -78,7 +81,7 @@ namespace PartyCli.Commands
         {
             var serversJson = JsonConvert.SerializeObject(servers);
             
-            _storage.StoreValue("serverlist", serversJson, false);
+            _storage.StoreValue("serverlist", servers, false);
             _logger.Log($"Saved new server list: {serversJson}");
             DisplayList(servers);
         }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using PartyCli.Models;
+using System.Collections.Generic;
 
 namespace PartyCli.Data
 {
     public interface IServerRepository
     {
-        void StoreValue(string name, string value, bool writeToConsole = true);
+        void StoreValue(string name, List<ServerModel> value, bool writeToConsole = true);
 
-        string RetrieveValue(string name);
+        List<ServerModel> RetrieveValue(string name);
     }
 }

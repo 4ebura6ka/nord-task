@@ -1,11 +1,12 @@
-﻿using System;
+﻿using PartyCli.Models;
+using System.Collections.Generic;
 
 namespace PartyCli.Data
 {
     public interface ILogRepository
     {
-        void StoreValue(string name, string value, bool writeToConsole = true);
+        void StoreValue(string name, List<LogModel> log, bool writeToConsole = true);
 
-        string RetrieveValue(string name);
+        List<LogModel> RetrieveValue(string name);
     }
 }
