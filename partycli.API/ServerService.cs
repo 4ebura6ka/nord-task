@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using partycli.Models;
+using PartyCli.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace partycli.API
+namespace PartyCli.API
 {
     public class ServerService : IServerService, IDisposable
     {

@@ -1,7 +1,7 @@
 ﻿using Spectre.Console.Cli;
 using System;
 
-namespace partycli.Commands
+namespace PartyCli.Commands
 {
     public class ConfigCommand : Command<ConfigCommand.Settings>
     {

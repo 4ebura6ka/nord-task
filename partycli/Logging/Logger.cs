@@ -1,9 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
-using partycli.Models;
+using PartyCli.Models;
 using System.Collections.Generic;
 
-namespace partycli
+namespace PartyCli
 {
     public class Logger : ILogger
     {

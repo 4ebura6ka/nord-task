@@ -1,5 +1,5 @@
 ﻿using System;
-namespace partycli
+namespace PartyCli
 {
     public class Storage : IStorage
     { 

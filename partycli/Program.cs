@@ -1,17 +1,17 @@
 using Newtonsoft.Json;
-using partycli.API;
-using partycli.Models;
+using PartyCli.API;
+using PartyCli.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using partycli.Commands;
+using PartyCli.Commands;
 using Microsoft.Extensions.DependencyInjection;
-using partycli.Infrastructure;
+using PartyCli.Infrastructure;
 using System.Configuration;
 
-namespace partycli
+namespace PartyCli
 {
     public static class Program
     {

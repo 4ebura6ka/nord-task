@@ -1,8 +1,8 @@
-﻿using partycli.Models;
+﻿using PartyCli.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace partycli.API
+namespace PartyCli.API
 {
     public interface IServerService
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Spectre.Console.Cli;
 
-namespace partycli.Infrastructure
+namespace PartyCli.Infrastructure
 {
     public sealed class TypeResolver : ITypeResolver, IDisposable
     {

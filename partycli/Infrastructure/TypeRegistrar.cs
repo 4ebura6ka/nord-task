@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace partycli.Infrastructure
+namespace PartyCli.Infrastructure
 {
     public sealed class TypeRegistrar : ITypeRegistrar
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace partycli.Properties {
+namespace PartyCli.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using partycli.API;
-using partycli.Models;
+using PartyCli.API;
+using PartyCli.Models;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace partycli.Commands
+namespace PartyCli.Commands
 {
     public class ServerListCommand : AsyncCommand<ServerListCommand.Settings>
     {

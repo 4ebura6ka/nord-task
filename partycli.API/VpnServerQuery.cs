@@ -1,5 +1,5 @@
 ﻿using System;
-namespace partycli.API
+namespace PartyCli.API
 {
     public class VpnServerQuery
     {

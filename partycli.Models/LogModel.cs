@@ -1,5 +1,5 @@
 ﻿using System;
-namespace partycli.Models
+namespace PartyCli.Models
 {
     public class LogModel
     {

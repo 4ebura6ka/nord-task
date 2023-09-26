@@ -1,4 +1,4 @@
-﻿namespace partycli
+﻿namespace PartyCli
 {
     public interface IStorage
     {
