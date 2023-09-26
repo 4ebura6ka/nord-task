@@ -97,13 +97,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="State.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="IStorage.cs" />
-    <Compile Include="ILogger.cs" />
-    <Compile Include="Country.cs" />
-    <Compile Include="Protocol.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Infrastructure\TypeResolver.cs" />
   </ItemGroup>
   <ItemGroup>
