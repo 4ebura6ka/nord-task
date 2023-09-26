@@ -1,15 +1,16 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using PartyCli.Data;
 using PartyCli.Models;
+using System;
 using System.Collections.Generic;
 
 namespace PartyCli
 {
     public class Logger : ILogger
     {
-        private readonly IStorage _storage;
+        private readonly ILogRepository _storage;
 
-        public Logger(IStorage storage)
+        public Logger(ILogRepository storage)
         {
             _storage = storage;
         }
@@ -23,15 +24,16 @@ namespace PartyCli
             };
 
             List<LogModel> currentLog;
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.log))
+            var storedLog = _storage.RetrieveValue("log");
+            if (!string.IsNullOrEmpty(storedLog))
             {
                 try
                 {
-                    currentLog = JsonConvert.DeserializeObject<List<LogModel>>(Properties.Settings.Default.log);
+                    currentLog = JsonConvert.DeserializeObject<List<LogModel>>(storedLog);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Something weird stored in logs:{ex.Message}. Re-writing.");
+                    Console.WriteLine($"Something weird stored in logs:{ex.Message}.Re-writing.");
                     currentLog = new List<LogModel>();
                 }
                 currentLog.Add(newLog);

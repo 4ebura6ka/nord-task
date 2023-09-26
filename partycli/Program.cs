@@ -1,14 +1,10 @@
-using Newtonsoft.Json;
-using PartyCli.API;
-using PartyCli.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using PartyCli.Commands;
 using Microsoft.Extensions.DependencyInjection;
+using PartyCli.API;
+using PartyCli.Commands;
 using PartyCli.Infrastructure;
+using PartyCli.Data;
+using Spectre.Console.Cli;
+using System;
 using System.Configuration;
 
 namespace PartyCli
@@ -17,11 +13,12 @@ namespace PartyCli
     {
         public static int Main(string[] args)
         {
-            var name = string.Empty;
-
             var services = new ServiceCollection();
             services.AddScoped<ILogger, Logger>();
-            services.AddSingleton<IStorage, Storage>();
+            services.AddSingleton<IServerRepository, ServerRepository>();
+            services.AddSingleton<IConfigRepository, ConfigRepository>();
+            services.AddSingleton<ILogRepository, LogRepository>();
+
             services.AddHttpClient<IServerService, ServerService>("nordvpn", client =>
             {
                 client.BaseAddress = new Uri(ConfigurationManager.AppSettings["NordVpn"]);
@@ -32,16 +29,16 @@ namespace PartyCli
             app.Configure(config =>
             {
                 config.AddCommand<ServerListCommand>("server_list")
-                .WithDescription("[underline red]To get and save all servers, use command[/]: partycli.exe server_list")
-                .WithDescription("To get and save France servers, use command: partycli.exe server_list --france")
-                .WithDescription("To get and save servers that support TCP protocol, use command: partycli.exe server_list --TCP")
-                .WithDescription("To see saved list of servers, use command: partycli.exe server_list --local ")
-                .WithExample("server_list");
+                .WithDescription("[green]To get and save servers[/]")
+                .WithExample("[underline red]To get and save all servers, use command[/]: [italic]partycli server_list[/]")
+                .WithExample("[yellow]To get and save France servers, use command[/]: [italic]partycli server_list --country france[/]")
+                .WithExample("[yellow]To get and save servers that support TCP protocol, use command[/]:[italic]partycli server_list --protocol TCP[/]")
+                .WithExample("To see saved list of servers, use command: [italic]partycli server_list --local[/]");
 
                 config.AddCommand<ConfigCommand>("config")
-              //  .IsHidden()
+                .IsHidden()
                 .WithDescription("Saves the configuration")
-                .WithExample("config");
+                .WithExample("config", "newparameter", "value");
             });
             return app.Run(args);
         }

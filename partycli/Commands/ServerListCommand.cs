@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using PartyCli.API;
 using PartyCli.Models;
+using PartyCli.Data;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace PartyCli.Commands
 {
@@ -15,9 +15,9 @@ namespace PartyCli.Commands
     {
         private readonly ILogger _logger;
         private readonly IServerService _serverService;
-        private readonly IStorage _storage;
+        private readonly IServerRepository _storage;
 
-        public ServerListCommand(IServerService serverService, IStorage storage, ILogger logger) 
+        public ServerListCommand(IServerService serverService, IServerRepository storage, ILogger logger) 
         {
             _serverService = serverService;
             _storage = storage;
@@ -25,23 +25,21 @@ namespace PartyCli.Commands
         }
         public class Settings : CommandSettings
         {
-            [CommandArgument(0, "[OPTIONS]")]
-            public string Options { get; set; }
+            [CommandOption("--local")]
+            public bool? Local { get; set; }
+
+            [CommandOption("-c|--country")]
+            public string Country { get; set; }
+
+            [CommandOption("-p|--protocol")]
+            public string Protocol { get; set; }
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
-            var param = settings.Options;
-
-            if (string.IsNullOrWhiteSpace(settings.Options))
+            if (settings.Local != null && (bool)settings.Local)
             {
-                await FetchAllServers();
-                return 0;
-            }
-
-            if (param == "--local")
-            {
-                var serverlist = Properties.Settings.Default.serverlist;
+                var serverlist = _storage.RetrieveValue("serverlist");
                 if (!string.IsNullOrEmpty(serverlist))
                 {
                     var servers = JsonConvert.DeserializeObject<List<ServerModel>>(serverlist);
@@ -54,27 +52,30 @@ namespace PartyCli.Commands
                 return 0;
             }
 
-            if (Enum.TryParse<Country>(param, true, out Country country))
+            if (!string.IsNullOrEmpty(settings.Country) && Enum.TryParse<Country>(settings.Country, true, out Country country))
             {
                 await FetchCountryServers(country);
                 return 0;
             }
 
-            if (Enum.TryParse<Protocol>(param, true, out Protocol protocol))
+            if (!string.IsNullOrEmpty(settings.Protocol) && Enum.TryParse<Protocol>(settings.Protocol, true, out Protocol protocol))
             {
                 await FetchProtocolServers(protocol);
+                return 0;
             }
+
+            await FetchAllServers();
+            
             return 0;
         }
 
         private async Task FetchProtocolServers(Protocol protocol)
         {
-            var query = new VpnServerQuery((int)protocol, null, null, null, null, null);
-            var servers = await _serverService.GetAllServersByProtocol((int)query.Protocol.Value);
-            ManageServers(servers);
+            var servers = await _serverService.GetAllServersByProtocol((int)protocol);
+            ManageServersInformation(servers);
         }
 
-        private void ManageServers(List<ServerModel> servers)
+        private void ManageServersInformation(List<ServerModel> servers)
         {
             var serversJson = JsonConvert.SerializeObject(servers);
             
@@ -85,25 +86,24 @@ namespace PartyCli.Commands
 
         private async Task FetchCountryServers(Country country)
         {
-            var query = new VpnServerQuery(null, (int)country, null, null, null, null);
-            var servers = await _serverService.GetAllServersByCountry(query.CountryId.Value);
-            ManageServers(servers);
+            var servers = await _serverService.GetAllServersByCountry((int)country);
+            ManageServersInformation(servers);
         }
 
         private async Task FetchAllServers()
         {
             var servers = await _serverService.GetAllServers();
-            ManageServers(servers);
+            ManageServersInformation(servers);
         }
 
         private void DisplayList(List<ServerModel> servers)
         {
-            Console.WriteLine("Server list: ");
+            AnsiConsole.MarkupLine("[bold]Server list:[/]");
             foreach (var server in servers)
             {
-                AnsiConsole.MarkupLine($"Name: [green]{server.Name}[/]");
+                AnsiConsole.MarkupLine($"Name: [green]{server.Name}[/]. Load: {server.Load}. Status: {server.Status}");
             }
-            Console.WriteLine($"Total servers: [red]{servers.Count}[/]");
+            AnsiConsole.MarkupLine($"Total servers: [red]{servers.Count}[/]");
         }
     }
 }

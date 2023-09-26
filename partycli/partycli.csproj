@@ -121,26 +121,19 @@
     <Compile Include="Infrastructure\TypeRegistrar.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Storage.cs" />
-    <Compile Include="IStorage.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Infrastructure\TypeResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\partycli.Data\partycli.Data.csproj">
+      <Project>{bba0de1e-71b4-4501-be9c-ace035bbed18}</Project>
+      <Name>partycli.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\partycli.Models\partycli.Models.csproj">
       <Name>partycli.Models</Name>
     </ProjectReference>

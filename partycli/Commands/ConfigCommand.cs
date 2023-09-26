@@ -1,11 +1,12 @@
-﻿using Spectre.Console.Cli;
+﻿using PartyCli.Data;
+using Spectre.Console.Cli;
 using System;
 
 namespace PartyCli.Commands
 {
     public class ConfigCommand : Command<ConfigCommand.Settings>
     {
-        private readonly IStorage _storage;
+        private readonly IConfigRepository _storage;
         private readonly ILogger _logger;
 
         public class Settings : CommandSettings
@@ -17,7 +18,7 @@ namespace PartyCli.Commands
             public string ConfigValue { get; set; }
         }
 
-        public ConfigCommand(IStorage storage, ILogger logger)
+        public ConfigCommand(IConfigRepository storage, ILogger logger)
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

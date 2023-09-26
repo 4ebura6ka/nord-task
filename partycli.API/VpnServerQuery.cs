@@ -1,5 +1,4 @@
-﻿using System;
-namespace PartyCli.API
+﻿namespace PartyCli.API
 {
     public class VpnServerQuery
     {
