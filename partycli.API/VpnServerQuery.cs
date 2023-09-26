@@ -1,6 +1,6 @@
 ﻿namespace PartyCli.API
 {
-    // doesn't look needed with current functionality. Could be used for constructing one universal query
+    //TODO: doesn't look needed with current functionality. Could be used for constructing one universal query
     public class VpnServerQuery
     {
         public int? Protocol { get; set; }

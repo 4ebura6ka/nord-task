@@ -1,5 +1,4 @@
-﻿using System;
-namespace PartyCli.Models
+﻿namespace PartyCli.Models
 {
     public class ServerModel
     {

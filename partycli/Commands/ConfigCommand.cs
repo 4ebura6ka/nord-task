@@ -29,20 +29,11 @@ namespace PartyCli.Commands
             var name = settings.ConfigName;
             var value = settings.ConfigValue;
 
-            // shouldn't happen
-            if (string.IsNullOrWhiteSpace(name)) return 1;
-
-            var processedName = ProccessName(name);
+            var processedName = name.Replace("-", string.Empty); ;
             _storage.StoreValue(processedName, value);
             _logger.Log($"Changed {processedName} to {value}");
 
             return 0;
-        }
-
-        private string ProccessName(string name)
-        {
-            name = name.Replace("-", string.Empty);
-            return name;
         }
     }
 }
