@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace partycli
 {
-	public class Logger
-	{
+    public class Logger : ILogger
+    {
         private readonly IStorage _storage;
 
-		public Logger(IStorage storage)
-		{
+        public Logger(IStorage storage)
+        {
             _storage = storage;
-		}
+        }
 
         public void Log(string action)
         {
