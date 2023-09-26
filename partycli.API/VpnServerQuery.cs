@@ -1,5 +1,6 @@
 ﻿namespace PartyCli.API
 {
+    // doesn't look needed with current functionality
     public class VpnServerQuery
     {
         public int? Protocol { get; set; }

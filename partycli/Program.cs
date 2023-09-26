@@ -28,18 +28,23 @@ namespace PartyCli
             var app = new CommandApp(registrar);
             app.Configure(config =>
             {
+                config.ValidateExamples();
+
                 config.AddCommand<ServerListCommand>("server_list")
-                .WithDescription("[green]To get and save servers[/]")
-                .WithExample("[underline red]To get and save all servers, use command[/]: [italic]partycli server_list[/]")
-                .WithExample("[yellow]To get and save France servers, use command[/]: [italic]partycli server_list --country france[/]")
-                .WithExample("[yellow]To get and save servers that support TCP protocol, use command[/]:[italic]partycli server_list --protocol TCP[/]")
-                .WithExample("To see saved list of servers, use command: [italic]partycli server_list --local[/]");
+                .WithExample(new[] {"server_list", "--country", "france"})
+                .WithExample(new[] {"server_list", "--protocol", "TCP"})
+                .WithExample(new[] {"server_list", "--local"})
+                .WithDescription(
+                "[green]To get and save France servers, use command[/]: [italic]partycli server_list --country france[/]\n"+
+                "[green]To get and save servers that support TCP protocol, use command[/]: [italic]partycli server_list --protocol TCP[/]\n"+
+                "[green]To see saved list of servers, use command[/]: [italic]partycli server_list --local[/]\n");
 
                 config.AddCommand<ConfigCommand>("config")
                 .IsHidden()
                 .WithDescription("Saves the configuration")
-                .WithExample("config", "newparameter", "value");
+                .WithExample(new[] {"config", "newparam", "value"});
             });
+
             return app.Run(args);
         }
     }

@@ -7,7 +7,6 @@ using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 
 namespace PartyCli.Commands
 {

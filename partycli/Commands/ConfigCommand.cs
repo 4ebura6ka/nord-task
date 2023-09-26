@@ -14,7 +14,7 @@ namespace PartyCli.Commands
             [CommandArgument(0, "[NAME]")]
             public string ConfigName { get; set; }
 
-            [CommandArgument(0, "[VALUE]")]
+            [CommandArgument(1, "[VALUE]")]
             public string ConfigValue { get; set; }
         }
 
