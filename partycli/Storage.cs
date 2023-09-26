@@ -1,13 +1,8 @@
-﻿
-using System;
+﻿using System;
 namespace partycli
 {
     public class Storage : IStorage
-    {
-        public Storage()
-        {
-        }
-
+    { 
         public void StoreValue(string name, string value, bool writeToConsole = true)
         {
             try
@@ -24,7 +19,6 @@ namespace partycli
             {
                 Console.WriteLine("Error: Couldn't save " + name + ". Check if command was input correctly.");
             }
-
         }
     }
 }

@@ -12,7 +12,7 @@ namespace partycli.API
 		{
 		}
 
-        public string getAllServersListAsync()
+        public string GetAllServersListAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers");
             var response = client.SendAsync(request).Result;
@@ -20,7 +20,7 @@ namespace partycli.API
             return responseString;
         }
 
-        public string getAllServerByCountryListAsync(int countryId)
+        public string GetAllServerByCountryListAsync(int countryId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers?filters[servers_technologies][id]=35&filters[country_id]=" + countryId);
             var response = client.SendAsync(request).Result;
@@ -28,7 +28,7 @@ namespace partycli.API
             return responseString;
         }
 
-        public string getAllServerByProtocolListAsync(int vpnProtocol)
+        public string GetAllServerByProtocolListAsync(int vpnProtocol)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers?filters[servers_technologies][id]=" + vpnProtocol);
             var response = client.SendAsync(request).Result;
