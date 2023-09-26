@@ -21,10 +21,19 @@ namespace partycli
                 Action = action,
                 Time = DateTime.Now
             };
+
             List<LogModel> currentLog;
             if (!string.IsNullOrEmpty(Properties.Settings.Default.log))
             {
-                currentLog = JsonConvert.DeserializeObject<List<LogModel>>(Properties.Settings.Default.log);
+                try
+                {
+                    currentLog = JsonConvert.DeserializeObject<List<LogModel>>(Properties.Settings.Default.log);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something weird stored in logs:{ex.Message}. Re-writing.");
+                    currentLog = new List<LogModel>();
+                }
                 currentLog.Add(newLog);
             }
             else

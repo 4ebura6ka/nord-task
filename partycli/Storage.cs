@@ -12,12 +12,12 @@ namespace partycli
                 settings.Save();
                 if (writeToConsole)
                 {
-                    Console.WriteLine("Changed " + name + " to " + value);
+                    Console.WriteLine($"Changed {name} to {value}");
                 }
             }
             catch
             {
-                Console.WriteLine("Error: Couldn't save " + name + ". Check if command was input correctly.");
+                Console.WriteLine($"Error: Couldn't save {name}. Check if command was input correctly.");
             }
         }
     }
