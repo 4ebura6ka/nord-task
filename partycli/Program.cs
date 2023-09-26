@@ -9,6 +9,7 @@ using Spectre.Console.Cli;
 using partycli.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using partycli.Infrastructure;
+using System.Configuration;
 
 namespace partycli
 {
@@ -19,9 +20,12 @@ namespace partycli
             var name = string.Empty;
 
             var services = new ServiceCollection();
-            services.AddSingleton<ServerService>();
-            services.AddSingleton<ILogger, Logger>();
+            services.AddScoped<ILogger, Logger>();
             services.AddSingleton<IStorage, Storage>();
+            services.AddHttpClient<IServerService, ServerService>("nordvpn", client =>
+            {
+                client.BaseAddress = new Uri(ConfigurationManager.AppSettings["NordVpn"]);
+            });
 
             var registrar = new TypeRegistrar(services);
             var app = new CommandApp(registrar);

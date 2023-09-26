@@ -1,41 +1,43 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using partycli.Models;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace partycli.API
 {
-	public class ServerService
-	{
+    public class ServerService : IServerService, IDisposable
+    {
+        private readonly HttpClient _httpClient;
 
-        private static readonly HttpClient client = new HttpClient();
-
-        public ServerService()
-		{
-		}
-
-        public string GetAllServersListAsync()
+        public ServerService(HttpClient httpClient)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers");
-            var response = client.SendAsync(request).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            return responseString;
+            _httpClient = httpClient;
         }
 
-        public string GetAllServerByCountryListAsync(int countryId)
+        public async Task<List<ServerModel>> GetAllServers()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers?filters[servers_technologies][id]=35&filters[country_id]=" + countryId);
-            var response = client.SendAsync(request).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            return responseString;
+            var response = await _httpClient.GetStringAsync("servers");
+            var servers = JsonConvert.DeserializeObject<List<ServerModel>>(response);
+            return servers;
         }
 
-        public string GetAllServerByProtocolListAsync(int vpnProtocol)
+        public async Task<List<ServerModel>> GetAllServersByCountry(int countryId)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://api.nordvpn.com/v1/servers?filters[servers_technologies][id]=" + vpnProtocol);
-            var response = client.SendAsync(request).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            return responseString;
+            var response = await _httpClient.GetStringAsync($"servers?filters[servers_technologies][id]=35&filters[country_id]={countryId}");
+            var servers = JsonConvert.DeserializeObject<List<ServerModel>>(response);
+            return servers;
         }
 
+        public async Task<List<ServerModel>> GetAllServersByProtocol(int vpnProtocol)
+        {
+            var response = await _httpClient.GetStringAsync($"servers??filters[servers_technologies][id]={vpnProtocol}");
+            var servers = JsonConvert.DeserializeObject<List<ServerModel>>(response);
+            return servers;
+        }
+
+        public void Dispose() => _httpClient?.Dispose();
     }
 }
 
