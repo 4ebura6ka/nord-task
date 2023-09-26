@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using PartyCli.Data;
 using PartyCli.Models;
 
-namespace PartyCli
+namespace PartyCli.Data
 {
     public class LogRepository : ILogRepository
     {

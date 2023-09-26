@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PartyCli.Data
+﻿namespace PartyCli.Data
 {
     public interface IConfigRepository
     {

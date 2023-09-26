@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "partycli.API", "partycli.AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "partycli.Data", "partycli.Data\partycli.Data.csproj", "{BBA0DE1E-71B4-4501-BE9C-ACE035BBED18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "partycli.API.Tests", "partycli.API.Tests\partycli.API.Tests.csproj", "{38567F9F-B8BF-4C54-B9EA-2AA3B37356E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "partycli.Data.Tests", "partycli.API.Tests\partycli.Data.Tests.csproj", "{38567F9F-B8BF-4C54-B9EA-2AA3B37356E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

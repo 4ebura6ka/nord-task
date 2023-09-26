@@ -13,7 +13,7 @@ namespace PartyCli
             try
             {
                 var settings = partycli.Data.Properties.Settings.Default;
-                settings[name] = JsonConvert.SerializeObject(servers); ;
+                settings[name] = JsonConvert.SerializeObject(servers);
                 settings.Save();
                 if (writeToConsole)
                 {

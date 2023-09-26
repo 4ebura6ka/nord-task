@@ -47,13 +47,24 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ServerRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\partycli.Data\partycli.Data.csproj">
+      <Project>{bba0de1e-71b4-4501-be9c-ace035bbed18}</Project>
+      <Name>partycli.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\partycli.Models\partycli.Models.csproj">
+      <Project>{1771206a-ea27-4766-88b9-c0f3cc89b90b}</Project>
+      <Name>partycli.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

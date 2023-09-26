@@ -46,5 +46,17 @@ namespace partycli.Data.Properties {
                 this["log"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string testvalue {
+            get {
+                return ((string)(this["testvalue"]));
+            }
+            set {
+                this["testvalue"] = value;
+            }
+        }
     }
 }
