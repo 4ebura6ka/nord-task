@@ -1,10 +1,5 @@
 ﻿using Spectre.Console.Cli;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace partycli.Commands
 {
@@ -17,6 +12,9 @@ namespace partycli.Commands
         {
             [CommandArgument(0, "[NAME]")]
             public string ConfigName { get; set; }
+
+            [CommandArgument(0, "[VALUE]")]
+            public string ConfigValue { get; set; }
         }
 
         public ConfigCommand(IStorage storage, ILogger logger)
@@ -28,14 +26,14 @@ namespace partycli.Commands
         public override int Execute(CommandContext context, Settings settings)
         {
             var name = settings.ConfigName;
+            var value = settings.ConfigValue;
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                name = "config";
-            }
+            // shouldn't happen
+            if (string.IsNullOrWhiteSpace(name)) return 1;
 
-            _storage.StoreValue(ProccessName(name), "config");
-            _logger.Log("Changed " + ProccessName(name) + " to " + "config");
+            var processedName = ProccessName(name);
+            _storage.StoreValue(processedName, value);
+            _logger.Log($"Changed {processedName} to {value}");
 
             return 0;
         }
