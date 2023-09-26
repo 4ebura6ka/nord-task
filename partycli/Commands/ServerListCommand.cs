@@ -5,16 +5,19 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace partycli.Commands
 {
-    public class ServerListCommand : Command<ServerListCommand.Settings>
+    public class ServerListCommand : AsyncCommand<ServerListCommand.Settings>
     {
         private readonly ILogger _logger;
-        private readonly ServerService _serverService;
+        private readonly IServerService _serverService;
         private readonly IStorage _storage;
 
-        public ServerListCommand(ServerService serverService, IStorage storage, ILogger logger) 
+        public ServerListCommand(IServerService serverService, IStorage storage, ILogger logger) 
         {
             _serverService = serverService;
             _storage = storage;
@@ -26,21 +29,23 @@ namespace partycli.Commands
             public string Options { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
             var param = settings.Options;
 
             if (string.IsNullOrWhiteSpace(settings.Options))
             {
-                FetchAllServers();
+                await FetchAllServers();
                 return 0;
             }
 
             if (param == "--local")
             {
-                if (!string.IsNullOrEmpty(Properties.Settings.Default.serverlist))
+                var serverlist = Properties.Settings.Default.serverlist;
+                if (!string.IsNullOrEmpty(serverlist))
                 {
-                    DisplayList(Properties.Settings.Default.serverlist);
+                    var servers = JsonConvert.DeserializeObject<List<ServerModel>>(serverlist);
+                    DisplayList(servers);
                 }
                 else
                 {
@@ -51,52 +56,54 @@ namespace partycli.Commands
 
             if (Enum.TryParse<Country>(param, true, out Country country))
             {
-                FetchCountryServers(country);
+                await FetchCountryServers(country);
                 return 0;
             }
 
             if (Enum.TryParse<Protocol>(param, true, out Protocol protocol))
             {
-                FetchProtocolServer(protocol);
+                await FetchProtocolServers(protocol);
             }
             return 0;
         }
 
-        private void FetchProtocolServer(Protocol protocol) 
+        private async Task FetchProtocolServers(Protocol protocol)
         {
             var query = new VpnServerQuery((int)protocol, null, null, null, null, null);
-            var serverList = _serverService.GetAllServerByProtocolListAsync((int)query.Protocol.Value);
-            _storage.StoreValue("serverlist", serverList, false);
-            _logger.Log("Saved new server list: " + serverList);
-            DisplayList(serverList);
+            var servers = await _serverService.GetAllServersByProtocol((int)query.Protocol.Value);
+            ManageServers(servers);
         }
 
-        private void FetchCountryServers(Country country)
+        private void ManageServers(List<ServerModel> servers)
+        {
+            var serversJson = JsonConvert.SerializeObject(servers);
+            
+            _storage.StoreValue("serverlist", serversJson, false);
+            _logger.Log($"Saved new server list: {serversJson}");
+            DisplayList(servers);
+        }
+
+        private async Task FetchCountryServers(Country country)
         {
             var query = new VpnServerQuery(null, (int)country, null, null, null, null);
-            var serverList = _serverService.GetAllServerByCountryListAsync(query.CountryId.Value);
-            _storage.StoreValue("serverlist", serverList, false);
-            _logger.Log("Saved new server list: " + serverList);
-            DisplayList(serverList);
+            var servers = await _serverService.GetAllServersByCountry(query.CountryId.Value);
+            ManageServers(servers);
         }
 
-        private void FetchAllServers()
+        private async Task FetchAllServers()
         {
-            var serverList = _serverService.GetAllServersListAsync();
-            _storage.StoreValue("serverlist", serverList, false);
-            _logger.Log("Saved new server list: " + serverList);
-            DisplayList(serverList);
+            var servers = await _serverService.GetAllServers();
+            ManageServers(servers);
         }
 
-        public void DisplayList(string serverListString)
+        private void DisplayList(List<ServerModel> servers)
         {
-            var serverlist = JsonConvert.DeserializeObject<List<ServerModel>>(serverListString);
             Console.WriteLine("Server list: ");
-            for (var index = 0; index < serverlist.Count; index++)
+            foreach (var server in servers)
             {
-                AnsiConsole.MarkupLine($"Name: [blue]{serverlist[index].Name}[/]");
+                AnsiConsole.MarkupLine($"Name: [green]{server.Name}[/]");
             }
-            Console.WriteLine("Total servers: " + serverlist.Count);
+            Console.WriteLine($"Total servers: [red]{servers.Count}[/]");
         }
     }
 }
